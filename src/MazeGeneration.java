@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -11,18 +10,18 @@ public class MazeGeneration {
 		this.height = y;
 		this.maze = new int[width][height];
 		createMaze(0,0);
-		display();
 		System.out.println(Arrays.deepToString(maze));
-		
-		// draw();
+		display();
+		draw();
 	}
 	private void createMaze(int cWidth, int cHeight) {
 		Compass[] direction = Compass.values();
 		Collections.shuffle(Arrays.asList(direction));
+		System.out.println(Arrays.toString(direction));
 		for (Compass pointing: direction) {
 			int nextW = cWidth + pointing.compassX;
 			int nextH = cHeight + pointing.compassY;
-			if (sandwiched(nextW, width) && sandwiched (nextH, height) && maze[nextW][nextH] == 0) {
+			if (arrayBounds(nextW, width) && arrayBounds (nextH, height) && maze[nextW][nextH] == 0) {
 				maze[cWidth][cHeight] |= pointing.value;
 				maze[nextW][nextH] |= pointing.opposite.value;
 				createMaze(nextW, nextH);
@@ -30,13 +29,13 @@ public class MazeGeneration {
 			
 		}
 	}
-	
-	private void understandMaze() {
-		
+
+	public int[][] getMaze () {
+		return maze;
 	}
 	
-	private boolean sandwiched (int val, int max) {
-		return (val >= 0 && val < max );
+	private boolean arrayBounds (int index, int max) {
+		return (index >= 0 && index < max );
 	}
 	
 	private enum Compass {
@@ -53,6 +52,7 @@ public class MazeGeneration {
 			this.value = value; this.compassX = compassX; this.compassY = compassY;
 		}
 	}
+	
 	public void display() {
 		for (int i = 0; i < height; i++) {
 			// draw the north edge
@@ -74,11 +74,10 @@ public class MazeGeneration {
 	}
 	
 	public void draw() {
-		new Window((width)*32, (height)*32);
+		new Window(width, height);
 	}
 	
 	public static void main (String [] args) {
 		new MazeGeneration(15,15);
 	}
-
 }
