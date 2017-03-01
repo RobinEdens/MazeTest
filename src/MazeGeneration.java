@@ -1,6 +1,9 @@
 import java.util.Arrays;
 import java.util.Collections;
 
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+
 public class MazeGeneration {
 	private int width , height;
 	private int[][] maze;
@@ -10,14 +13,11 @@ public class MazeGeneration {
 		this.height = y;
 		this.maze = new int[width][height];
 		createMaze(0,0);
-		System.out.println(Arrays.deepToString(maze));
-		display();
-		draw();
+		drawMaze();
 	}
 	private void createMaze(int cWidth, int cHeight) {
 		Compass[] direction = Compass.values();
 		Collections.shuffle(Arrays.asList(direction));
-		System.out.println(Arrays.toString(direction));
 		for (Compass pointing: direction) {
 			int nextW = cWidth + pointing.compassX;
 			int nextH = cHeight + pointing.compassY;
@@ -30,10 +30,6 @@ public class MazeGeneration {
 		}
 	}
 
-	public int[][] getMaze () {
-		return maze;
-	}
-	
 	private boolean arrayBounds (int index, int max) {
 		return (index >= 0 && index < max );
 	}
@@ -53,31 +49,18 @@ public class MazeGeneration {
 		}
 	}
 	
-	public void display() {
-		for (int i = 0; i < height; i++) {
-			// draw the north edge
-			for (int j = 0; j < width; j++) {
-				System.out.print((maze[j][i] & 1) == 0 ? "+---" : "+   ");
-			}
-			System.out.println("+");
-			// draw the west edge
-			for (int j = 0; j < width; j++) {
-				System.out.print((maze[j][i] & 8) == 0 ? "|   " : "    ");
-			}
-			System.out.println("|");
-		}
-		// draw the bottom line
-		for (int j = 0; j < width; j++) {
-			System.out.print("+---");
-		}
-		System.out.println("+");
+	private JFrame drawMaze() {
+		JFrame frame = new JFrame();
+		frame.setSize((width*32)+8, (height+1)*32);
+		frame.setTitle("Maze");
+		frame.setVisible(true);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.add(new MazeGraphics(width, height, maze));
+		return frame;
 	}
-	
-	public void draw() {
-		new Window(width, height);
-	}
-	
+
 	public static void main (String [] args) {
-		new MazeGeneration(15,15);
+		new MazeGeneration(25,25);
 	}
 }
